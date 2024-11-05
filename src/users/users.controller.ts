@@ -6,32 +6,56 @@ import {
   Delete,
   Param,
   Body,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
-
+import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
+import { UserEntity } from './user.entity';
+import { v4 as uuid } from 'uuid';
 @Controller('users')
-export class UserController {
+export class UsersController {
+  private users: UserEntity[] = [];
   @Get()
-  find(): string[] {
-    return ['ADAM', 'JAMES', 'JULIA'];
+  @HttpCode(HttpStatus.OK)
+  find(): UserEntity[] {
+    return this.users;
   }
 
-  @Get(':username')
-  findOne(@Param('username') username: string): string {
-    return username;
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  findOne(@Param('id') id: string): UserEntity {
+    return this.users.find((user) => user.id === id);
   }
 
   @Post()
-  create(@Body() data: any): string {
-    return data;
+  @HttpCode(HttpStatus.CREATED)
+  create(@Body() createUserDto: CreateUserDto): UserEntity {
+    const user = { id: uuid(), ...createUserDto };
+    this.users.push(user);
+    return user;
   }
 
-  @Patch(':username')
-  update(@Param('username') username: string): string {
-    return username;
+  @Patch(':id')
+  @HttpCode(HttpStatus.OK)
+  update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ): UpdateUserDto {
+    const userIndex = this.users.findIndex((user) => user.id === id);
+
+    if (userIndex === -1) {
+      throw new Error('User not found');
+    }
+
+    this.users[userIndex] = { ...this.users[userIndex], ...updateUserDto };
+
+    return this.users[userIndex];
   }
 
-  @Delete(':username')
-  delete(@Param('username') username: string): string {
-    return username;
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  delete(@Param('id') id: string) {
+    this.users = this.users.filter((user) => user.id !== id);
   }
 }
