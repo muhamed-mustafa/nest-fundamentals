@@ -8,6 +8,7 @@ import {
   Body,
   HttpCode,
   HttpStatus,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -24,7 +25,7 @@ export class UsersController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  findOne(@Param('id') id: string): UserEntity {
+  findOne(@Param('id', ParseUUIDPipe) id: string): UserEntity {
     return this.users.find((user) => user.id === id);
   }
 
@@ -39,7 +40,7 @@ export class UsersController {
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): UpdateUserDto {
     const userIndex = this.users.findIndex((user) => user.id === id);
@@ -55,7 +56,7 @@ export class UsersController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  delete(@Param('id') id: string) {
+  delete(@Param('id', ParseUUIDPipe) id: string) {
     this.users = this.users.filter((user) => user.id !== id);
   }
 }
