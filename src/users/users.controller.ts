@@ -13,28 +13,26 @@ import {
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserEntity } from './user.entity';
-import { v4 as uuid } from 'uuid';
+import { UsersService } from './users.service';
 @Controller('users')
 export class UsersController {
-  private users: UserEntity[] = [];
+  constructor(private readonly usersService: UsersService) {}
   @Get()
   @HttpCode(HttpStatus.OK)
   find(): UserEntity[] {
-    return this.users;
+    return this.usersService.findUsers();
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id', ParseUUIDPipe) id: string): UserEntity {
-    return this.users.find((user) => user.id === id);
+    return this.usersService.findUserById(id);
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createUserDto: CreateUserDto): UserEntity {
-    const user = { id: uuid(), ...createUserDto };
-    this.users.push(user);
-    return user;
+    return this.usersService.createUser(createUserDto);
   }
 
   @Patch(':id')
@@ -43,20 +41,12 @@ export class UsersController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): UpdateUserDto {
-    const userIndex = this.users.findIndex((user) => user.id === id);
-
-    if (userIndex === -1) {
-      throw new Error('User not found');
-    }
-
-    this.users[userIndex] = { ...this.users[userIndex], ...updateUserDto };
-
-    return this.users[userIndex];
+    return this.usersService.updateUser(id, updateUserDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   delete(@Param('id', ParseUUIDPipe) id: string) {
-    this.users = this.users.filter((user) => user.id !== id);
+    return this.usersService.deleteUser(id);
   }
 }
