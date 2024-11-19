@@ -15,18 +15,21 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserEntity } from './user.entity';
 import { UsersService } from './users.service';
-import { APP_NAME } from './user.constant';
+import { APP_NAME, USER_HABITS } from './user.constant';
 @Controller('users')
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     @Inject(APP_NAME) private readonly appName: string,
-  ) {}
+    @Inject(USER_HABITS) private readonly userHabits: string,
+  ) {
+    console.log('appName', this.appName);
+    console.log('userHabits', this.userHabits);
+  }
 
   @Get()
   @HttpCode(HttpStatus.OK)
   find(): UserEntity[] {
-    console.log('appName', this.appName);
     return this.usersService.findUsers();
   }
 
