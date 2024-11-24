@@ -16,6 +16,7 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserEntity } from './user.entity';
 import { UsersService } from './users.service';
 import { APP_NAME, USER_HABITS } from './user.constant';
+import { UserResponseDto } from './dtos/user-response-dto';
 @Controller('users')
 export class UsersController {
   constructor(
@@ -35,13 +36,13 @@ export class UsersController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  findOne(@Param('id', ParseUUIDPipe) id: string): UserEntity {
+  findOne(@Param('id', ParseUUIDPipe) id: string): UserResponseDto {
     return this.usersService.findUserById(id);
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createUserDto: CreateUserDto): UserEntity {
+  create(@Body() createUserDto: CreateUserDto): UserResponseDto {
     return this.usersService.createUser(createUserDto);
   }
 

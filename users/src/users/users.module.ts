@@ -1,7 +1,8 @@
-import { Injectable, Module } from '@nestjs/common';
+import { ClassSerializerInterceptor, Injectable, Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { APP_NAME, USER_HABITS } from './user.constant';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 class MockUsersService {
   findUsers() {
@@ -42,6 +43,10 @@ const loggerAliasProvider = {
 @Module({
   controllers: [UsersController],
   providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
+    },
     // Standard Provider
     UsersService,
     UserHabitsFactory,
