@@ -10,6 +10,7 @@ import {
   HttpStatus,
   ParseUUIDPipe,
   Inject,
+  Req,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -17,6 +18,7 @@ import { UserEntity } from './user.entity';
 import { UsersService } from './users.service';
 import { APP_NAME, USER_HABITS } from './user.constant';
 import { UserResponseDto } from './dtos/user-response-dto';
+import { resolve } from 'path';
 @Controller('users')
 export class UsersController {
   constructor(
@@ -30,7 +32,11 @@ export class UsersController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  find(): UserEntity[] {
+  async find(@Req() req: Request): Promise<UserEntity[]> {
+
+    console.log("req",req.body);
+    
+    await new Promise((resolve) => setTimeout(resolve, 5000));
     return this.usersService.findUsers();
   }
 

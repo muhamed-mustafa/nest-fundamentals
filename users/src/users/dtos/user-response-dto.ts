@@ -10,9 +10,14 @@ export class UserResponseDto {
   @Exclude()
   password: string;
 
-  @Expose({ name: 'address'})
+  // @Expose({ name: 'address'})
+  @Exclude()
   country: string;
 
+  @Expose({ name: 'address'})
+  getCountry() {
+    return this.country;  
+  }
   constructor(user: Partial<UserResponseDto>) {
     Object.assign(this, user);
   }
