@@ -11,6 +11,8 @@ import {
   ParseUUIDPipe,
   Inject,
   Req,
+  UseGuards,
+  SetMetadata,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -18,7 +20,9 @@ import { UserEntity } from './user.entity';
 import { UsersService } from './users.service';
 import { APP_NAME, USER_HABITS } from './user.constant';
 import { UserResponseDto } from './dtos/user-response-dto';
-import { resolve } from 'path';
+import { AuthGuard } from 'src/common/guards/auth/auth.guard';
+import { Public } from 'src/common/decorators/public-decorator';
+
 @Controller('users')
 export class UsersController {
   constructor(
@@ -30,12 +34,10 @@ export class UsersController {
     console.log('userHabits', this.userHabits);
   }
 
+  @UseGuards(AuthGuard)
   @Get()
   @HttpCode(HttpStatus.OK)
   async find(@Req() req: Request): Promise<UserEntity[]> {
-
-    console.log("req",req.body);
-    
     await new Promise((resolve) => setTimeout(resolve, 5000));
     return this.usersService.findUsers();
   }
@@ -46,6 +48,8 @@ export class UsersController {
     return this.usersService.findUserById(id);
   }
 
+  // @SetMetadata('isPublic', true)
+  @Public()
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createUserDto: CreateUserDto): UserResponseDto {

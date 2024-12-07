@@ -17,12 +17,12 @@ async function bootstrap() {
     }),
   );
 
-  app.useGlobalInterceptors(
-    new WrapDataInterceptor(),
-    new TimeoutInterceptor(),
-  );
+  // app.useGlobalInterceptors(
+  //   new WrapDataInterceptor(),
+  //   new TimeoutInterceptor(),
+  // );
 
-  app.useGlobalFilters(new CustomExceptionFilter());
+  // app.useGlobalFilters(new CustomExceptionFilter());
 
   await app.listen(process.env.PORT ?? 3000);
 }
