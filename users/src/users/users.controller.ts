@@ -22,19 +22,18 @@ import { APP_NAME, USER_HABITS } from './user.constant';
 import { UserResponseDto } from './dtos/user-response-dto';
 import { AuthGuard } from 'src/common/guards/auth/auth.guard';
 import { Public } from 'src/common/decorators/public-decorator';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('users')
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
+    private configService: ConfigService,
     @Inject(APP_NAME) private readonly appName: string,
     @Inject(USER_HABITS) private readonly userHabits: string,
   ) {
-    console.log('appName', this.appName);
-    console.log('userHabits', this.userHabits);
-    console.log('process',process.env.NODE_ENV);
     console.log('process',process.env.DATABASE_NAME);
-    console.log('process', process.env.NODE_ENV === 'development');
+    console.log('configService',this.configService.get<string>('DATABASE_NAME', 'default value'));
   }
 
   @UseGuards(AuthGuard)
