@@ -32,6 +32,9 @@ export class UsersController {
   ) {
     console.log('appName', this.appName);
     console.log('userHabits', this.userHabits);
+    console.log('process',process.env.NODE_ENV);
+    console.log('process',process.env.DATABASE_NAME);
+    console.log('process', process.env.NODE_ENV === 'development');
   }
 
   @UseGuards(AuthGuard)

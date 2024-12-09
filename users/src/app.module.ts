@@ -11,9 +11,17 @@ import { UserModule } from './users/users.module';
 import { CommonModule } from './common/common.module';
 import { LoggerMiddleware } from './common/middlewares/logger/logger.middleware';
 import { UsersController } from './users/users.controller';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [UserModule, CommonModule],
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath:
+        process.env.NODE_ENV === 'development' ? 'dev.env' : 'staging.env',
+    }),
+    UserModule,
+    CommonModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
@@ -27,6 +35,6 @@ export class AppModule implements NestModule {
         { path: 'users/:id', method: RequestMethod.PATCH },
       )
       .forRoutes(UsersController);
-      // .forRoutes('*');
+    // .forRoutes('*');
   }
 }
