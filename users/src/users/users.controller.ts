@@ -13,6 +13,7 @@ import {
   Req,
   UseGuards,
   SetMetadata,
+  Logger,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -24,24 +25,39 @@ import { AuthGuard } from 'src/common/guards/auth/auth.guard';
 import { Public } from 'src/common/decorators/public-decorator';
 import { ConfigService } from '@nestjs/config';
 
+interface EnvironmentVariables {
+  PORT: number;
+  EMAIL: string;
+}
+
 @Controller('users')
 export class UsersController {
+  private logger: Logger = new Logger(UsersController.name);
   constructor(
     private readonly usersService: UsersService,
-    private configService: ConfigService,
+    private configService: ConfigService<EnvironmentVariables>,
     @Inject(APP_NAME) private readonly appName: string,
     @Inject(USER_HABITS) private readonly userHabits: string,
   ) {
-    console.log('process',process.env.DATABASE_NAME);
-    console.log('configService',this.configService.get<string>('DATABASE_NAME', 'default value'));
+    console.log('process', process.env.DATABASE_NAME);
+    console.log(
+      'configService',
+      this.configService.get('PORT', 'default value'),
+    );
   }
 
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Get()
   @HttpCode(HttpStatus.OK)
   async find(@Req() req: Request): Promise<UserEntity[]> {
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-    return this.usersService.findUsers();
+    // await new Promise((resolve) => setTimeout(resolve, 5000));
+    this.logger.log(`AppName: ${this.appName}`);
+    this.logger.log(`UserHabits: ${this.userHabits}`);
+
+    const users =  this.usersService.findUsers();
+
+    this.logger.debug(`Users: ${users.length}`);
+    return users;
   }
 
   @Get(':id')

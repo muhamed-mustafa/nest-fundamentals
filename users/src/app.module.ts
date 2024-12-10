@@ -26,10 +26,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       expandVariables: true,
     }),
 
-    TypeOrmModule.forRootAsync({
-      useFactory:
-        process.env.NODE_ENV === 'development' ? ormConfig : ormProdConfig,
-    }),
+    // TypeOrmModule.forRootAsync({
+    //   useFactory:
+    //     process.env.NODE_ENV === 'development' ? ormConfig : ormProdConfig,
+    // }),
     UserModule,
     CommonModule,
   ],
